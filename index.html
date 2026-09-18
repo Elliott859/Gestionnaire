@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gestionnaire — planning devoirs &amp; contrôles</title>
+<style>
+  :root{
+    --nuit:#2a2140;
+    --violet:#6f6394;
+    --rose:#d07a9e;
+    --peche:#fbc5a8;
+    --flamme-1:#fff2a1;
+    --flamme-2:#ffaa33;
+    --flamme-3:#ff5533;
+    --flamme-4:#d32f2f;
+    --orange:#f0662c;
+    --orange-fonce:#8a3400;
+    --vert:#0f8a3c;
+    --vert-clair:#dff5e4;
+    --rouge:#b3261e;
+    --papier:#fffaf5;
+    --encre:#2a2140;
+    --encre-douce:#5d5279;
+    --r-l:22px;
+    --r-m:14px;
+    --ombre:0 12px 28px -16px rgba(30,20,50,.55);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;min-height:100%;}
+  body{
+    background:linear-gradient(175deg,var(--violet) 0%,var(--rose) 55%,var(--peche) 100%) fixed;
+    font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;
+    color:var(--encre);
+    -webkit-text-size-adjust:100%;
+  }
+  button,input{font:inherit;color:inherit;}
+  button{cursor:pointer;}
+  :focus-visible{outline:3px solid var(--nuit);outline-offset:2px;}
+
+  header{text-align:center;padding:34px 18px 14px;}
+  .marque{
+    margin:0;font-size:clamp(2.1rem,7vw,3.4rem);font-weight:800;letter-spacing:.06em;
+    background:linear-gradient(180deg,var(--flamme-1) 0%,var(--flamme-2) 40%,var(--flamme-3) 70%,var(--flamme-4) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .accroche{margin:6px 0 0;color:rgba(255,255,255,.9);font-weight:600;}
+
+  nav{
+    position:sticky;top:10px;z-index:30;width:fit-content;max-width:calc(100% - 24px);
+    margin:0 auto 22px;display:flex;flex-wrap:wrap;justify-content:center;gap:2px;
+    padding:6px;background:rgba(255,250,245,.92);border-radius:999px;box-shadow:var(--ombre);
+  }
+  .onglet{
+    border:0;background:transparent;padding:9px 16px;border-radius:999px;
+    font-weight:700;font-size:.9rem;color:var(--encre-douce);transition:background .15s,color .15s;
+  }
+  .onglet:hover{background:rgba(240,102,44,.12);color:var(--encre);}
+  .onglet.actif{background:var(--orange);color:#fff;}
+
+  main{max-width:780px;margin:0 auto;padding:0 18px 70px;}
+  .ecran{display:none;}
+  .ecran.actif{display:block;}
+  h2{margin:0 0 14px;font-size:1.25rem;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.2);}
+
+  .panneau{background:rgba(255,250,245,.93);border-radius:var(--r-l);padding:22px;box-shadow:var(--ombre);}
+  .panneau + h2{margin-top:28px;}
+
+  .jour-titre{margin:0 0 12px;font-size:1.05rem;font-weight:700;text-transform:capitalize;color:var(--encre-douce);}
+  .resume{border-radius:var(--r-m);padding:14px 16px;font-weight:700;font-size:1.05rem;}
+  .resume.charge{background:linear-gradient(110deg,#ffe4c6,#ffd0a5);color:var(--orange-fonce);}
+  .resume.libre{background:var(--vert-clair);color:var(--vert);}
+  .resume strong{font-size:1.25rem;}
+
+  .stats{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;padding-top:14px;
+    border-top:1px dashed rgba(90,75,120,.3);font-size:.86rem;color:var(--encre-douce);}
+
+  .grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+  .carte{
+    display:flex;flex-direction:column;gap:5px;text-align:left;
+    background:var(--papier);border:0;border-left:6px solid var(--orange);
+    border-radius:var(--r-m);padding:15px 14px;box-shadow:var(--ombre);
+    transition:transform .14s,box-shadow .14s;
+  }
+  .carte:hover{transform:translateY(-3px);}
+  .carte.controle{border-left-color:var(--flamme-4);}
+  .carte.revision{border-left-color:var(--violet);}
+  .carte.faite{border-left-color:var(--vert);background:var(--vert-clair);}
+  .carte-type{font-size:.72rem;font-weight:700;letter-spacing:.04em;color:var(--encre-douce);}
+  .carte-nom{font-size:1rem;font-weight:700;line-height:1.25;}
+  .carte-matiere{font-size:.85rem;color:var(--orange-fonce);font-weight:600;}
+  .carte-duree{font-size:.8rem;color:var(--encre-douce);font-weight:700;margin-top:2px;}
+  .vide{grid-column:1/-1;margin:0;padding:26px 10px;text-align:center;color:rgba(255,255,255,.92);font-weight:600;}
+  .panneau .vide{color:var(--encre-douce);}
+
+  .barre-jour{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
+  .fleche{width:44px;height:44px;flex:none;border:0;border-radius:50%;background:var(--papier);
+    font-size:1.4rem;font-weight:700;color:var(--orange-fonce);box-shadow:var(--ombre);}
+  .fleche:hover{background:#fff1e4;}
+  .jour-courant{text-align:center;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.25);}
+  .jour-courant b{display:block;font-size:1.05rem;text-transform:capitalize;}
+  .jour-courant small{opacity:.8;}
+  .centre{text-align:center;margin:0 0 18px;}
+
+  label{display:block;font-weight:700;font-size:.88rem;color:var(--encre-douce);margin-bottom:6px;}
+  .champ{margin-bottom:18px;}
+  input[type=text],input[type=number],input[type=date],input[type=time]{
+    width:100%;padding:11px 13px;border-radius:10px;border:2px solid rgba(90,75,120,.2);background:#fff;
+  }
+  input:focus{outline:0;border-color:var(--orange);}
+  input[type=range]{width:100%;accent-color:var(--orange);}
+
+  .type-choix{display:flex;gap:10px;margin-bottom:20px;}
+  .type-btn{flex:1;padding:13px;border-radius:var(--r-m);border:2px solid rgba(90,75,120,.2);
+    background:#fff;font-weight:700;transition:border-color .15s,background .15s;}
+  .type-btn.actif{border-color:var(--orange);background:#fff1e4;}
+
+  .btn{border:0;border-radius:999px;padding:12px 22px;font-weight:700;transition:filter .15s,background .15s;}
+  .btn:hover{filter:brightness(1.05);}
+  .pleine{width:100%;}
+  .btn-plein{background:var(--orange);color:#fff;}
+  .btn-clair{background:rgba(90,75,120,.12);color:var(--encre);}
+  .btn-rouge{background:#ffe9e7;color:var(--rouge);}
+  .btn-blanc{background:var(--papier);color:var(--encre);box-shadow:var(--ombre);}
+
+  .message{margin:0 0 16px;padding:11px 14px;border-radius:10px;font-weight:700;font-size:.9rem;}
+  .message.cache{display:none;}
+  .message.erreur{background:#fdecea;color:var(--rouge);}
+  .message.succes{background:var(--vert-clair);color:var(--vert);}
+
+  .ligne{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:var(--papier);border-radius:var(--r-m);padding:14px 16px;box-shadow:var(--ombre);margin-bottom:10px;}
+  .ligne strong{display:block;}
+  .ligne span{font-size:.82rem;color:var(--encre-douce);}
+
+  .fenetre{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+    padding:18px;background:rgba(30,20,50,.6);}
+  .fenetre.cache{display:none;}
+  .boite{position:relative;width:100%;max-width:400px;max-height:86vh;overflow:auto;
+    background:var(--papier);border-radius:var(--r-l);padding:26px 22px 22px;}
+  .boite h3{margin:0 0 4px;font-size:1.15rem;}
+  .fenetre-soustitre{margin:0 0 16px;color:var(--encre-douce);font-weight:600;}
+  .fermer{position:absolute;top:10px;right:10px;width:32px;height:32px;border:0;border-radius:50%;
+    background:rgba(90,75,120,.12);font-size:.9rem;}
+  .detail{margin:0 0 18px;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.9rem;}
+  .detail dt{font-weight:700;color:var(--encre-douce);}
+  .detail dd{margin:0;text-transform:capitalize;}
+  .badge-fait{background:var(--vert-clair);color:var(--vert);font-weight:700;text-align:center;
+    padding:10px;border-radius:10px;margin:0 0 10px;}
+  .avert{color:var(--rouge);font-weight:600;font-size:.9rem;}
+  .fenetre-actions{display:flex;gap:10px;justify-content:flex-end;}
+
+  .lien-effacer{margin-top:24px;text-align:center;}
+
+  @media (max-width:640px){
+    nav{position:fixed;top:auto;bottom:0;left:0;right:0;width:auto;max-width:none;
+      justify-content:space-around;border-radius:18px 18px 0 0;
+      padding:8px 4px calc(8px + env(safe-area-inset-bottom));}
+    .onglet{padding:8px 10px;font-size:.78rem;}
+    main{padding-bottom:100px;}
+    .grille{grid-template-columns:repeat(auto-fill,minmax(135px,1fr));}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="marque">GESTIONNAIRE</h1>
+  <p class="accroche">Tes devoirs et tes contrôles, répartis tout seuls.</p>
+</header>
+
+<nav>
+  <button type="button" class="onglet actif" data-ecran="accueil">Accueil</button>
+  <button type="button" class="onglet" data-ecran="planning">Planning</button>
+  <button type="button" class="onglet" data-ecran="ajouter">Ajouter</button>
+  <button type="button" class="onglet" data-ecran="retirer">Retirer</button>
+  <button type="button" class="onglet" data-ecran="prefs">Préférences</button>
+</nav>
+
+<main>
+
+  <section id="ecran-accueil" class="ecran actif">
+    <div class="panneau">
+      <p class="jour-titre" id="accueil-date"></p>
+      <div class="resume" id="accueil-resume"></div>
+      <div class="stats" id="accueil-stats"></div>
+    </div>
+    <h2>Tâches du jour</h2>
+    <div class="grille" id="accueil-taches"></div>
+    <p class="centre" style="margin-top:22px;">
+      <button type="button" class="btn btn-blanc" data-aller="ajouter">Ajouter une tâche</button>
+    </p>
+  </section>
+
+  <section id="ecran-planning" class="ecran">
+    <h2>Planning</h2>
+    <div class="barre-jour">
+      <button type="button" class="fleche" id="jour-precedent" aria-label="Jour précédent">‹</button>
+      <div class="jour-courant"><b id="planning-date"></b><small id="planning-annee"></small></div>
+      <button type="button" class="fleche" id="jour-suivant" aria-label="Jour suivant">›</button>
+    </div>
+    <p class="centre"><button type="button" class="btn btn-blanc" id="jour-aujourdhui">Revenir à aujourd’hui</button></p>
+    <div class="panneau" style="margin-bottom:20px;">
+      <div class="resume" id="planning-resume"></div>
+    </div>
+    <div class="grille" id="planning-taches"></div>
+  </section>
+
+  <section id="ecran-ajouter" class="ecran">
+    <h2>Ajouter une tâche</h2>
+    <div class="panneau">
+      <div class="type-choix">
+        <button type="button" class="type-btn actif" data-type="Devoir">Devoir</button>
+        <button type="button" class="type-btn" data-type="Controle">Contrôle</button>
+      </div>
+      <div class="champ">
+        <label for="champ-matiere">Matière</label>
+        <input type="text" id="champ-matiere" placeholder="Mathématiques">
+      </div>
+      <div class="champ">
+        <label for="champ-nom">Intitulé</label>
+        <input type="text" id="champ-nom" placeholder="Exercices 12 à 18">
+      </div>
+      <div class="champ">
+        <label for="champ-date">À rendre le</label>
+        <input type="date" id="champ-date">
+      </div>
+      <div class="champ">
+        <label for="champ-importance">Importance : <span id="valeur-importance">5</span>/10 — plus c’est haut, plus on s’y prend tôt</label>
+        <input type="range" id="champ-importance" min="1" max="10" value="5">
+      </div>
+      <div class="champ">
+        <label for="champ-duree">Durée estimée (minutes)</label>
+        <input type="number" id="champ-duree" min="1" placeholder="45">
+      </div>
+      <p id="ajout-message" class="message cache"></p>
+      <button type="button" class="btn btn-plein pleine" id="btn-ajouter">Ajouter la tâche</button>
+    </div>
+  </section>
+
+  <section id="ecran-retirer" class="ecran">
+    <h2>Retirer une tâche</h2>
+    <div id="retirer-liste"></div>
+  </section>
+
+  <section id="ecran-prefs" class="ecran">
+    <h2>Préférences</h2>
+    <div class="panneau">
+      <div class="champ">
+        <label for="champ-limite">Durée maximale de travail par jour (minutes)</label>
+        <input type="number" id="champ-limite" min="1">
+      </div>
+      <div class="champ">
+        <label for="champ-debut">Heure de début du mode travail</label>
+        <input type="time" id="champ-debut">
+      </div>
+      <p id="prefs-message" class="message cache"></p>
+      <button type="button" class="btn btn-plein pleine" id="btn-prefs">Enregistrer</button>
+    </div>
+    <p class="lien-effacer"><button type="button" class="btn btn-rouge" id="btn-effacer">Tout effacer</button></p>
+  </section>
+
+</main>
+
+<div class="fenetre cache" id="fenetre">
+  <div class="boite">
+    <button type="button" class="fermer" id="fenetre-fermer" aria-label="Fermer">✕</button>
+    <div id="fenetre-contenu"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Dates : chaînes "AAAA-MM-JJ", comparables directement ---------- */
+  function pad2(n) { return String(n).padStart(2, '0'); }
+  function toISO(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+  function fromISO(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function today() { return toISO(new Date()); }
+  function addDays(s, n) { var d = fromISO(s); d.setDate(d.getDate() + n); return toISO(d); }
+  function joursEntre(a, b) { return Math.round((fromISO(b) - fromISO(a)) / 86400000); }
+  function dateFR(s) {
+    return fromISO(s).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  }
+  function dateFRLongue(s) {
+    return fromISO(s).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+  function $(id) { return document.getElementById(id); }
+
+  /* ---------- Modèle : Tache / Devoir / Controle / JourPlanning ---------- */
+  var compteurId = 0;
+  function nouvelId() { compteurId++; return 'i' + Date.now().toString(36) + compteurId; }
+
+  function Tache(nom, matiere, dateLimite, tempsEstime, importance, type) {
+    this.id = nouvelId();
+    this.nom = nom;
+    this.matiere = matiere;
+    this.dateLimite = dateLimite;
+    this.tempsEstime = Number(tempsEstime);
+    this.importance = Number(importance);
+    this.type = type;
+    this.fait = false;
+    this.jourExecution = this.calculerJourExecution();
+  }
+  Tache.prototype.calculerJourExecution = function () {
+    var d = addDays(this.dateLimite, -this.importance);
+    var t = today();
+    return d < t ? t : d;
+  };
+  Tache.prototype.getJoursRestants = function () { return joursEntre(today(), this.jourExecution); };
+
+  function Devoir(nom, matiere, dateLimite, tempsEstime, importance) {
+    Tache.call(this, nom, matiere, dateLimite, tempsEstime, importance, 'Devoir');
+    this.jourExecution = this.calculerJourExecution();
+  }
+  Devoir.prototype = Object.create(Tache.prototype);
+  Devoir.prototype.constructor = Devoir;
+
+  function Controle(nom, matiere, dateLimite, tempsEstime, importance) {
+    Tache.call(this, nom, matiere, dateLimite, tempsEstime, importance, 'Controle');
+    this.dureeMax = this.tempsEstime;
+    this.joursRevisions = joursEntre(this.jourExecution, this.dateLimite);
+  }
+  Controle.prototype = Object.create(Tache.prototype);
+  Controle.prototype.constructor = Controle;
+  Controle.prototype.getTempsRevisionQuotidien = function () {
+    if (this.joursRevisions <= 0) return this.dureeMax;
+    return this.tempsEstime / this.joursRevisions;
+  };
+
+  function JourPlanning(date) {
+    this.date = date;
+    this.taches = [];
+    this.tempsRevisions = [];
+    this.revisionFait = false;
+  }
+  JourPlanning.prototype.getDureeDeTravail = function () {
+    var duree = 0, i;
+    for (i = 0; i < this.taches.length; i++) {
+      if (!this.taches[i].fait && this.taches[i] instanceof Devoir) duree += this.taches[i].tempsEstime;
+    }
+    if (!this.revisionFait) {
+      for (i = 0; i < this.tempsRevisions.length; i++) duree += this.tempsRevisions[i].getTempsRevisionQuotidien();
+    }
+    return duree;
+  };
+  JourPlanning.prototype.ajouterTache = function (t) { this.taches.push(t); t.jourExecution = this.date; };
+  JourPlanning.prototype.retirerTache = function (t) { var i = this.taches.indexOf(t); if (i !== -1) this.taches.splice(i, 1); };
+  JourPlanning.prototype.ajouterTempsRevisions = function (c) { this.tempsRevisions.push(c); };
+  JourPlanning.prototype.depasserLimite = function () { return this.getDureeDeTravail() > etat.limite; };
+
+  /* ---------- État ---------- */
+  var etat = { jours: [], limite: 120, debutTravail: '18:00' };
+  var ecran = 'accueil';
+  var dateVue = today();
+  var typeChoisi = 'Devoir';
+
+  function trouverJour(date) {
+    for (var i = 0; i < etat.jours.length; i++) if (etat.jours[i].date === date) return etat.jours[i];
+    return null;
+  }
+  function jourOuCreer(date) {
+    var j = trouverJour(date);
+    if (!j) { j = new JourPlanning(date); etat.jours.push(j); }
+    return j;
+  }
+
+  /* ---------- Service de planification ---------- */
+  function getTempsTravail(date) {
+    var j = trouverJour(date);
+    return j ? j.getDureeDeTravail() : 0;
+  }
+
+  function tacheLaMoinsImportante(jour, veille) {
+    var choisie = null;
+    for (var i = 0; i < jour.taches.length; i++) {
+      var t = jour.taches[i];
+      if (!(t instanceof Devoir)) continue;
+      if (veille.date < t.dateLimite && veille.date >= today()) {
+        if (!choisie || t.importance < choisie.importance) choisie = t;
+      }
+    }
+    return choisie;
+  }
+
+  function lisserPlanning() {
+    for (var i = 0; i < etat.jours.length; i++) {
+      var jour = etat.jours[i];
+      var garde = 0;
+      while (jour.depasserLimite() && garde < 500) {
+        garde++;
+        var veille = jourOuCreer(addDays(jour.date, -1));
+        var t = tacheLaMoinsImportante(jour, veille);
+        if (!t) break;
+        jour.retirerTache(t);
+        veille.ajouterTache(t);
+      }
+    }
+  }
+
+  function creerUnDevoir(devoir) {
+    jourOuCreer(devoir.jourExecution).ajouterTache(devoir);
+    lisserPlanning();
+  }
+
+  function creerUnControle(controle) {
+    jourOuCreer(controle.dateLimite).ajouterTache(controle);
+    var dateRevision = addDays(controle.jourExecution, -1);
+    for (var i = 0; i < controle.joursRevisions; i++) {
+      jourOuCreer(dateRevision).ajouterTempsRevisions(controle);
+      dateRevision = addDays(dateRevision, -1);
+    }
+  }
+
+  function nettoyerLePasse() {
+    var t = today();
+    for (var i = 0; i < etat.jours.length; i++) {
+      var j = etat.jours[i];
+      j.taches = j.taches.filter(function (x) { return x.dateLimite > t; });
+      j.tempsRevisions = j.tempsRevisions.filter(function (c) { return c.dateLimite > t; });
+    }
+    etat.jours = etat.jours.filter(function (j) {
+      return j.date >= t || j.taches.length > 0 || j.tempsRevisions.length > 0;
+    });
+  }
+
+  /* ---------- Sauvegarde locale (remplace la classe Memoire) ---------- */
+  var CLE = 'gestionnaire-v1';
+
+  function sauvegarder() {
+    try {
+      localStorage.setItem(CLE, JSON.stringify({
+        limite: etat.limite,
+        debutTravail: etat.debutTravail,
+        jours: etat.jours.map(function (j) {
+          return {
+            date: j.date,
+            revisionFait: j.revisionFait,
+            taches: j.taches.map(function (t) {
+              return { id: t.id, type: t.type, nom: t.nom, matiere: t.matiere, dateLimite: t.dateLimite,
+                       tempsEstime: t.tempsEstime, importance: t.importance, fait: t.fait, jourExecution: t.jourExecution };
+            }),
+            revisions: j.tempsRevisions.map(function (c) { return c.id; })
+          };
+        })
+      }));
+    } catch (e) { /* navigation privée ou stockage plein : l'appli continue de fonctionner */ }
+  }
+
+  function charger() {
+    var brut = null;
+    try { brut = localStorage.getItem(CLE); } catch (e) { return; }
+    if (!brut) return;
+    try {
+      var d = JSON.parse(brut);
+      etat.limite = d.limite || 120;
+      etat.debutTravail = d.debutTravail || '18:00';
+      var parId = {};
+      etat.jours = (d.jours || []).map(function (jd) {
+        var j = new JourPlanning(jd.date);
+        j.revisionFait = !!jd.revisionFait;
+        j.taches = (jd.taches || []).map(function (td) {
+          var t = td.type === 'Devoir'
+            ? new Devoir(td.nom, td.matiere, td.dateLimite, td.tempsEstime, td.importance)
+            : new Controle(td.nom, td.matiere, td.dateLimite, td.tempsEstime, td.importance);
+          t.id = td.id;
+          t.fait = !!td.fait;
+          t.jourExecution = td.jourExecution;
+          parId[t.id] = t;
+          return t;
+        });
+        j.idsRevisions = jd.revisions || [];
+        return j;
+      });
+      etat.jours.forEach(function (j) {
+        j.tempsRevisions = j.idsRevisions.map(function (id) { return parId[id]; }).filter(Boolean);
+        delete j.idsRevisions;
+      });
+    } catch (e) { etat.jours = []; }
+  }
+
+  /* ---------- Navigation ---------- */
+  function afficherEcran(nom) {
+    ecran = nom;
+    var sections = document.querySelectorAll('.ecran');
+    for (var i = 0; i < sections.length; i++) sections[i].classList.remove('actif');
+    var cible = $('ecran-' + nom);
+    if (cible) cible.classList.add('actif');
+    var onglets = document.querySelectorAll('.onglet');
+    for (var k = 0; k < onglets.length; k++) {
+      onglets[k].classList.toggle('actif', onglets[k].getAttribute('data-ecran') === nom);
+    }
+    rendre();
+    window.scrollTo(0, 0);
+  }
+
+  function rendre() {
+    if (ecran === 'accueil') rendreAccueil();
+    else if (ecran === 'planning') rendrePlanning();
+    else if (ecran === 'retirer') rendreRetirer();
+    else if (ecran === 'prefs') rendrePrefs();
+  }
+
+  /* ---------- Cartes ---------- */
+  function resumeTravail(el, duree, phrase, phraseVide) {
+    if (duree > 0) {
+      el.className = 'resume charge';
+      el.innerHTML = '<strong>' + Math.round(duree) + ' min</strong> ' + phrase;
+    } else {
+      el.className = 'resume libre';
+      el.textContent = phraseVide;
+    }
+  }
+
+  function grilleDuJour(conteneur, date) {
+    conteneur.innerHTML = '';
+    var jour = trouverJour(date);
+    if (!jour || (jour.taches.length === 0 && jour.tempsRevisions.length === 0)) {
+      conteneur.innerHTML = '<p class="vide">Rien de prévu. Ajoute une tâche pour remplir cette journée.</p>';
+      return;
+    }
+    jour.taches.forEach(function (t) { conteneur.appendChild(carteTache(t)); });
+    jour.tempsRevisions.forEach(function (c) { conteneur.appendChild(carteRevision(c, jour)); });
+  }
+
+  function carteTache(tache) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'carte ' + (tache.type === 'Devoir' ? 'devoir' : 'controle') + (tache.fait ? ' faite' : '');
+    b.innerHTML =
+      '<span class="carte-type">' + (tache.type === 'Devoir' ? 'Devoir' : 'Contrôle') + (tache.fait ? ' · fait' : '') + '</span>' +
+      '<span class="carte-nom">' + esc(tache.nom) + '</span>' +
+      '<span class="carte-matiere">' + esc(tache.matiere) + '</span>' +
+      '<span class="carte-duree">' + Math.round(tache.tempsEstime) + ' min</span>';
+    b.addEventListener('click', function () { ouvrirTache(tache); });
+    return b;
+  }
+
+  function carteRevision(controle, jour) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'carte revision' + (jour.revisionFait ? ' faite' : '');
+    b.innerHTML =
+      '<span class="carte-type">Révision' + (jour.revisionFait ? ' · faite' : '') + '</span>' +
+      '<span class="carte-nom">' + esc(controle.nom) + '</span>' +
+      '<span class="carte-matiere">' + esc(controle.matiere) + '</span>' +
+      '<span class="carte-duree">' + Math.floor(controle.getTempsRevisionQuotidien()) + ' min</span>';
+    b.addEventListener('click', function () { ouvrirRevision(controle, jour); });
+    return b;
+  }
+
+  /* ---------- Fenêtre de détail ---------- */
+  function ouvrirFenetre(html) {
+    $('fenetre-contenu').innerHTML = html;
+    $('fenetre').classList.remove('cache');
+  }
+  function fermerFenetre() { $('fenetre').classList.add('cache'); }
+
+  function ouvrirTache(tache) {
+    ouvrirFenetre(
+      '<h3>' + esc(tache.nom) + '</h3>' +
+      '<p class="fenetre-soustitre">' + (tache.type === 'Devoir' ? 'Devoir' : 'Contrôle') + ' · ' + esc(tache.matiere) + '</p>' +
+      '<dl class="detail">' +
+      '<dt>À rendre le</dt><dd>' + dateFRLongue(tache.dateLimite) + '</dd>' +
+      '<dt>À faire le</dt><dd>' + dateFRLongue(tache.jourExecution) + '</dd>' +
+      '<dt>Dans</dt><dd>' + tache.getJoursRestants() + ' jour(s)</dd>' +
+      '<dt>Importance</dt><dd>' + tache.importance + '/10</dd>' +
+      '<dt>Durée estimée</dt><dd>' + Math.round(tache.tempsEstime) + ' min</dd>' +
+      '</dl>' +
+      (tache.fait
+        ? '<p class="badge-fait">Terminé</p><button type="button" class="btn btn-clair pleine" data-action="annuler-fait">Marquer comme à faire</button>'
+        : '<button type="button" class="btn btn-plein pleine" data-action="fait">Marquer comme fait</button>')
+    );
+    var f = $('fenetre-contenu').querySelector('[data-action="fait"]');
+    if (f) f.addEventListener('click', function () { tache.fait = true; sauvegarder(); ouvrirTache(tache); rendre(); });
+    var a = $('fenetre-contenu').querySelector('[data-action="annuler-fait"]');
+    if (a) a.addEventListener('click', function () { tache.fait = false; sauvegarder(); ouvrirTache(tache); rendre(); });
+  }
+
+  function ouvrirRevision(controle, jour) {
+    ouvrirFenetre(
+      '<h3>Révision : ' + esc(controle.nom) + '</h3>' +
+      '<p class="fenetre-soustitre">' + esc(controle.matiere) + '</p>' +
+      '<dl class="detail">' +
+      '<dt>Contrôle le</dt><dd>' + dateFRLongue(controle.dateLimite) + '</dd>' +
+      '<dt>Séance du jour</dt><dd>' + Math.floor(controle.getTempsRevisionQuotidien()) + ' min</dd>' +
+      '</dl>' +
+      (jour.revisionFait
+        ? '<p class="badge-fait">Terminé</p><button type="button" class="btn btn-clair pleine" data-action="annuler-fait">Marquer comme à faire</button>'
+        : '<button type="button" class="btn btn-plein pleine" data-action="fait">Marquer comme fait</button>')
+    );
+    var f = $('fenetre-contenu').querySelector('[data-action="fait"]');
+    if (f) f.addEventListener('click', function () { jour.revisionFait = true; sauvegarder(); ouvrirRevision(controle, jour); rendre(); });
+    var a = $('fenetre-contenu').querySelector('[data-action="annuler-fait"]');
+    if (a) a.addEventListener('click', function () { jour.revisionFait = false; sauvegarder(); ouvrirRevision(controle, jour); rendre(); });
+  }
+
+  /* ---------- Message temporaire ---------- */
+  function message(id, texte, type) {
+    var el = $(id);
+    el.textContent = texte;
+    el.className = 'message ' + type;
+    clearTimeout(el.minuteur);
+    el.minuteur = setTimeout(function () { el.className = 'message cache'; }, 5000);
+  }
+
+  /* ---------- Écran Accueil ---------- */
+  function rendreAccueil() {
+    lisserPlanning();
+    sauvegarder();
+    $('accueil-date').textContent = dateFRLongue(today());
+    resumeTravail($('accueil-resume'), getTempsTravail(today()), 'de travail aujourd’hui', 'Rien à faire aujourd’hui. Profites-en.');
+    grilleDuJour($('accueil-taches'), today());
+
+    var total = 0, sept = 0;
+    for (var i = 0; i < 7; i++) {
+      var d = addDays(today(), i);
+      sept += getTempsTravail(d);
+    }
+    for (var k = 0; k < etat.jours.length; k++) total += etat.jours[k].taches.length;
+    $('accueil-stats').innerHTML =
+      '<span><strong>' + total + '</strong> tâche(s) en cours</span>' +
+      '<span><strong>' + Math.round(sept) + ' min</strong> sur 7 jours</span>' +
+      '<span>limite : <strong>' + etat.limite + ' min/jour</strong></span>';
+  }
+
+  /* ---------- Écran Planning ---------- */
+  function rendrePlanning() {
+    $('planning-date').textContent = dateVue === today() ? 'Aujourd’hui · ' + dateFR(dateVue) : dateFR(dateVue);
+    $('planning-annee').textContent = fromISO(dateVue).getFullYear();
+    resumeTravail($('planning-resume'), getTempsTravail(dateVue), 'de travail ce jour-là', 'Journée libre.');
+    grilleDuJour($('planning-taches'), dateVue);
+  }
+
+  /* ---------- Écran Ajouter ---------- */
+  function ajouterTache() {
+    var matiere = $('champ-matiere').value.trim();
+    var nom = $('champ-nom').value.trim();
+    var date = $('champ-date').value;
+    var importance = parseInt($('champ-importance').value, 10);
+    var duree = parseInt($('champ-duree').value, 10);
+
+    if (!date) { message('ajout-message', 'Il faut remplir toutes les cases.', 'erreur'); return; }
+    if (date <= today()) { message('ajout-message', 'La date doit être après aujourd’hui.', 'erreur'); return; }
+    if (!duree || duree <= 0) { message('ajout-message', 'Indique une durée en minutes.', 'erreur'); return; }
+    if (!importance || importance < 1 || importance > 10) { message('ajout-message', 'L’importance va de 1 à 10.', 'erreur'); return; }
+    if (nom.length < 3) { message('ajout-message', 'Le nom doit contenir au moins 3 caractères.', 'erreur'); return; }
+    if (matiere.length < 3) { message('ajout-message', 'La matière doit contenir au moins 3 caractères.', 'erreur'); return; }
+
+    var existe = etat.jours.some(function (j) {
+      return j.taches.some(function (t) { return t.nom === nom && t.matiere === matiere; });
+    });
+    if (existe) { message('ajout-message', 'Cette tâche existe déjà.', 'erreur'); return; }
+
+    if (typeChoisi === 'Devoir') creerUnDevoir(new Devoir(nom, matiere, date, duree, importance));
+    else creerUnControle(new Controle(nom, matiere, date, duree, importance));
+
+    sauvegarder();
+    message('ajout-message', 'Tâche ajoutée. Elle est placée au bon jour dans ton planning.', 'succes');
+    $('champ-matiere').value = '';
+    $('champ-nom').value = '';
+    $('champ-date').value = '';
+    $('champ-duree').value = '';
+    $('champ-importance').value = 5;
+    $('valeur-importance').textContent = '5';
+  }
+
+  /* ---------- Écran Retirer ---------- */
+  function rendreRetirer() {
+    var liste = $('retirer-liste');
+    liste.innerHTML = '';
+    var toutes = [];
+    etat.jours.forEach(function (j) {
+      j.taches.forEach(function (t) { toutes.push({ t: t, j: j }); });
+    });
+    toutes.sort(function (a, b) { return a.t.dateLimite < b.t.dateLimite ? -1 : 1; });
+
+    if (toutes.length === 0) {
+      liste.innerHTML = '<p class="vide">Aucune tâche enregistrée.</p>';
+      return;
+    }
+    toutes.forEach(function (e) {
+      var ligne = document.createElement('div');
+      ligne.className = 'ligne';
+      ligne.innerHTML =
+        '<div><strong>' + esc(e.t.nom) + '</strong>' +
+        '<span>' + (e.t.type === 'Devoir' ? 'Devoir' : 'Contrôle') + ' · ' + esc(e.t.matiere) +
+        ' · à rendre le ' + dateFR(e.t.dateLimite) + '</span></div>' +
+        '<button type="button" class="btn btn-rouge">Retirer</button>';
+      ligne.querySelector('button').addEventListener('click', function () { confirmerRetrait(e.t, e.j); });
+      liste.appendChild(ligne);
+    });
+  }
+
+  function confirmerRetrait(tache, jour) {
+    ouvrirFenetre(
+      '<h3>Retirer cette tâche ?</h3>' +
+      '<p class="fenetre-soustitre">' + esc(tache.nom) + ' · ' + esc(tache.matiere) + '</p>' +
+      '<p class="avert">La tâche et ses séances de révision seront supprimées définitivement.</p>' +
+      '<div class="fenetre-actions">' +
+      '<button type="button" class="btn btn-clair" data-action="annuler">Annuler</button>' +
+      '<button type="button" class="btn btn-rouge" data-action="confirmer">Retirer</button></div>'
+    );
+    $('fenetre-contenu').querySelector('[data-action="annuler"]').addEventListener('click', fermerFenetre);
+    $('fenetre-contenu').querySelector('[data-action="confirmer"]').addEventListener('click', function () {
+      jour.retirerTache(tache);
+      etat.jours.forEach(function (j) {
+        j.tempsRevisions = j.tempsRevisions.filter(function (c) { return c.id !== tache.id; });
+      });
+      sauvegarder();
+      fermerFenetre();
+      rendreRetirer();
+    });
+  }
+
+  /* ---------- Écran Préférences ---------- */
+  function rendrePrefs() {
+    $('champ-limite').value = etat.limite;
+    $('champ-debut').value = etat.debutTravail;
+  }
+
+  function enregistrerPrefs() {
+    var limite = parseInt($('champ-limite').value, 10);
+    var debut = $('champ-debut').value;
+    if (!debut) { message('prefs-message', 'Choisis une heure de début.', 'erreur'); return; }
+    if (!limite || limite <= 0) { message('prefs-message', 'Indique une durée en minutes.', 'erreur'); return; }
+    etat.limite = limite;
+    etat.debutTravail = debut;
+    lisserPlanning();
+    sauvegarder();
+    message('prefs-message', 'Préférences enregistrées.', 'succes');
+  }
+
+  function toutEffacer() {
+    ouvrirFenetre(
+      '<h3>Tout effacer ?</h3>' +
+      '<p class="avert">Toutes les tâches et préférences seront perdues.</p>' +
+      '<div class="fenetre-actions">' +
+      '<button type="button" class="btn btn-clair" data-action="annuler">Annuler</button>' +
+      '<button type="button" class="btn btn-rouge" data-action="confirmer">Tout effacer</button></div>'
+    );
+    $('fenetre-contenu').querySelector('[data-action="annuler"]').addEventListener('click', fermerFenetre);
+    $('fenetre-contenu').querySelector('[data-action="confirmer"]').addEventListener('click', function () {
+      etat.jours = [];
+      etat.limite = 120;
+      etat.debutTravail = '18:00';
+      try { localStorage.removeItem(CLE); } catch (e) {}
+      fermerFenetre();
+      rendrePrefs();
+      afficherEcran('accueil');
+    });
+  }
+
+  /* ---------- Démarrage ---------- */
+  function init() {
+    charger();
+    nettoyerLePasse();
+    lisserPlanning();
+    sauvegarder();
+
+    var onglets = document.querySelectorAll('.onglet');
+    for (var i = 0; i < onglets.length; i++) {
+      (function (bouton) {
+        bouton.addEventListener('click', function () { afficherEcran(bouton.getAttribute('data-ecran')); });
+      })(onglets[i]);
+    }
+
+    var raccourcis = document.querySelectorAll('[data-aller]');
+    for (var k = 0; k < raccourcis.length; k++) {
+      (function (bouton) {
+        bouton.addEventListener('click', function () { afficherEcran(bouton.getAttribute('data-aller')); });
+      })(raccourcis[k]);
+    }
+
+    $('jour-precedent').addEventListener('click', function () { dateVue = addDays(dateVue, -1); rendrePlanning(); });
+    $('jour-suivant').addEventListener('click', function () { dateVue = addDays(dateVue, 1); rendrePlanning(); });
+    $('jour-aujourdhui').addEventListener('click', function () { dateVue = today(); rendrePlanning(); });
+
+    var types = document.querySelectorAll('.type-btn');
+    for (var m = 0; m < types.length; m++) {
+      (function (bouton) {
+        bouton.addEventListener('click', function () {
+          for (var n = 0; n < types.length; n++) types[n].classList.remove('actif');
+          bouton.classList.add('actif');
+          typeChoisi = bouton.getAttribute('data-type');
+        });
+      })(types[m]);
+    }
+
+    $('champ-importance').addEventListener('input', function () {
+      $('valeur-importance').textContent = $('champ-importance').value;
+    });
+    $('btn-ajouter').addEventListener('click', ajouterTache);
+    $('btn-prefs').addEventListener('click', enregistrerPrefs);
+    $('btn-effacer').addEventListener('click', toutEffacer);
+
+    $('fenetre-fermer').addEventListener('click', fermerFenetre);
+    $('fenetre').addEventListener('click', function (e) { if (e.target === $('fenetre')) fermerFenetre(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fermerFenetre(); });
+
+    $('champ-date').min = addDays(today(), 1);
+    afficherEcran('accueil');
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>
