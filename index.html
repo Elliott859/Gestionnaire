@@ -37,6 +37,7 @@
   button,input{font:inherit;color:inherit;}
   button{cursor:pointer;}
   :focus-visible{outline:3px solid var(--nuit);outline-offset:2px;}
+  .cache{display:none !important;}
 
   header{text-align:center;padding:34px 18px 14px;}
   .marque{
@@ -104,7 +105,7 @@
 
   label{display:block;font-weight:700;font-size:.88rem;color:var(--encre-douce);margin-bottom:6px;}
   .champ{margin-bottom:18px;}
-  input[type=text],input[type=number],input[type=date],input[type=time]{
+  input[type=text],input[type=number],input[type=date],input[type=time],input[type=password]{
     width:100%;padding:11px 13px;border-radius:10px;border:2px solid rgba(90,75,120,.2);background:#fff;
   }
   input:focus{outline:0;border-color:var(--orange);}
@@ -300,6 +301,33 @@
       <button type="button" class="btn btn-rouge pleine" id="btn-deconnexion">Se déconnecter</button>
     </div>
     <p class="notif-limite cache" id="compte-config-manquante">⚠️ Ce fichier n’a pas encore d’identifiants Firebase — les comptes ne fonctionneront pas tant que tu n’as pas créé ton projet et collé sa configuration en haut du script (voir les instructions fournies avec ce fichier).</p>
+
+    <h2 style="margin-top:28px;">École Directe</h2>
+    <p id="ed-message" class="message cache"></p>
+    <div class="panneau" id="ed-deconnecte">
+      <div class="champ">
+        <label for="ed-id">Identifiant</label>
+        <input type="text" id="ed-id" autocomplete="off">
+      </div>
+      <div class="champ">
+        <label for="ed-mdp">Mot de passe</label>
+        <input type="password" id="ed-mdp" autocomplete="off">
+      </div>
+      <div class="champ">
+        <label style="display:flex;gap:8px;align-items:center;font-weight:600;"><input type="checkbox" id="ed-memo" style="width:auto;"> Synchro automatique (enregistre le mot de passe en clair sur cet appareil)</label>
+      </div>
+      <button type="button" class="btn btn-plein pleine" id="ed-btn-connexion">Se connecter</button>
+    </div>
+    <div class="panneau cache" id="ed-qcm" style="margin-top:12px;">
+      <p class="notif-statut" id="ed-question"></p>
+      <div id="ed-reponses"></div>
+    </div>
+    <div class="panneau cache" id="ed-connecte">
+      <p class="notif-statut" id="ed-statut"></p>
+      <button type="button" class="btn btn-plein pleine" id="ed-btn-sync" style="margin-bottom:10px;">Synchroniser maintenant</button>
+      <button type="button" class="btn btn-rouge pleine" id="ed-btn-deco">Déconnecter École Directe</button>
+    </div>
+    <p class="notif-limite cache" id="ed-config-manquante">⚠️ Colle l’URL de ton Worker Cloudflare dans <code>ED_PROXY</code> dans le script pour activer l’import École Directe.</p>
   </section>
 
 </main>
@@ -398,7 +426,7 @@
   JourPlanning.prototype.depasserLimite = function () { return this.getDureeDeTravail() > etat.limite; };
 
   /* ---------- État ---------- */
-  var etat = { jours: [], limite: 120, debutTravail: '18:00', derniereNotif: null };
+  var etat = { jours: [], limite: 120, debutTravail: '18:00', derniereNotif: null, edImportes: [] };
   var ecran = 'accueil';
   var dateVue = today();
   var typeChoisi = 'Devoir';
@@ -480,6 +508,7 @@
       limite: etat.limite,
       debutTravail: etat.debutTravail,
       derniereNotif: etat.derniereNotif,
+      edImportes: etat.edImportes,
       jours: etat.jours.map(function (j) {
         return {
           date: j.date,
@@ -498,6 +527,7 @@
     etat.limite = d.limite || 120;
     etat.debutTravail = d.debutTravail || '18:00';
     etat.derniereNotif = d.derniereNotif || null;
+    etat.edImportes = d.edImportes || etat.edImportes || [];
     var parId = {};
     etat.jours = (d.jours || []).map(function (jd) {
       var j = new JourPlanning(jd.date);
@@ -704,6 +734,161 @@
       deco.classList.remove('cache');
       conn.classList.add('cache');
     }
+    rendreEd();
+  }
+
+  /* ---------- École Directe (via un proxy Cloudflare Worker) ---------- */
+  var ED_PROXY = 'COLLE_ICI_URL_DU_WORKER'; // ex. https://ed-proxy.toncompte.workers.dev
+  var ED_VERSION = '4.75.0';
+  var CLE_ED = 'gestionnaire-ed';
+  var edConfigOK = ED_PROXY.indexOf('COLLE_') !== 0;
+  var ed = { identifiant: '', cn: '', cv: '', token: '', eleveId: '', prenom: '', mdp: '', derniereSync: '' };
+  var edEnCours = false;
+
+  function edCharger() { try { var b = localStorage.getItem(CLE_ED); if (b) Object.assign(ed, JSON.parse(b)); } catch (e) {} }
+  function edSauver() { try { localStorage.setItem(CLE_ED, JSON.stringify(ed)); } catch (e) {} }
+  function b64(s) {
+    try {
+      var bin = atob(s), o = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) o[i] = bin.charCodeAt(i);
+      return new TextDecoder('utf-8').decode(o);
+    } catch (e) { return ''; }
+  }
+  function edExpire() { var e = new Error('Session École Directe expirée : reconnecte-toi.'); e.expire = true; return e; }
+
+  function edAppel(chemin, donnees, verbe) {
+    if (!edConfigOK) return Promise.reject(new Error('Proxy École Directe non configuré.'));
+    var headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+    if (ed.token) headers['X-Token'] = ed.token;
+    return fetch(ED_PROXY + chemin + '?v=' + ED_VERSION + (verbe ? '&verbe=' + verbe : ''), {
+      method: 'POST', headers: headers, body: 'data=' + encodeURIComponent(JSON.stringify(donnees || {}))
+    }).then(function (r) { return r.json(); }).then(function (rep) { if (rep.token) ed.token = rep.token; return rep; });
+  }
+
+  function edLogin(identifiant, mdp, apresQCM) {
+    ed.token = '';
+    var corps = { identifiant: identifiant, motdepasse: mdp, isReLogin: false, uuid: '' };
+    if (ed.cn && ed.cv) corps.fa = [{ cn: ed.cn, cv: ed.cv }];
+    return edAppel('/v3/login.awp', corps).then(function (rep) {
+      if (rep.code === 250 && !apresQCM) return edQCM(identifiant, mdp);
+      if (rep.code !== 200) throw new Error(rep.message || ('Erreur École Directe ' + rep.code));
+      var c = rep.data.accounts[0], id = c.id;
+      if (c.typeCompte !== 'E' && c.profile && c.profile.eleves && c.profile.eleves.length) id = c.profile.eleves[0].id;
+      ed.identifiant = identifiant; ed.eleveId = id; ed.prenom = c.prenom || '';
+      edSauver();
+    });
+  }
+
+  function edQCM(identifiant, mdp) {
+    return edAppel('/v3/connexion/doubleauth.awp', {}, 'get').then(function (rep) {
+      if (rep.code !== 200) throw new Error(rep.message || 'Double authentification impossible.');
+      return new Promise(function (resolve, reject) {
+        $('ed-question').textContent = b64(rep.data.question);
+        var zone = $('ed-reponses'); zone.innerHTML = '';
+        rep.data.propositions.forEach(function (p) {
+          var b = document.createElement('button');
+          b.type = 'button'; b.className = 'btn btn-blanc pleine'; b.style.marginBottom = '8px'; b.textContent = b64(p);
+          b.addEventListener('click', function () {
+            $('ed-qcm').classList.add('cache');
+            edAppel('/v3/connexion/doubleauth.awp', { choix: p }, 'post').then(function (r) {
+              if (r.code !== 200) throw new Error(r.message || 'Mauvaise réponse, réessaie.');
+              ed.cn = r.data.cn; ed.cv = r.data.cv; edSauver();
+              resolve(edLogin(identifiant, mdp, true));
+            }).catch(reject);
+          });
+          zone.appendChild(b);
+        });
+        $('ed-qcm').classList.remove('cache');
+      });
+    });
+  }
+
+  function edCreer(a, detail) {
+    var m = null;
+    if (detail && detail.matieres) detail.matieres.forEach(function (mm) {
+      if (mm.id === a.x.idDevoir || (mm.aFaire && mm.aFaire.idDevoir === a.x.idDevoir)) m = mm;
+    });
+    var nom = '';
+    if (m && m.aFaire && m.aFaire.contenu) {
+      nom = new DOMParser().parseFromString(b64(m.aFaire.contenu), 'text/html').body.textContent.replace(/\s+/g, ' ').trim();
+    }
+    if (nom.length > 60) nom = nom.slice(0, 57) + '…';
+    if (nom.length < 3) nom = 'Travail à faire';
+    var mat = (a.x.matiere || 'Matière').toLowerCase(); mat = mat.charAt(0).toUpperCase() + mat.slice(1);
+    if (a.x.interrogation || (m && m.interrogation)) creerUnControle(new Controle(nom, mat, a.date, 10, 3));
+    else creerUnDevoir(new Devoir(nom, mat, a.date, 10, 3));
+    etat.edImportes.push(a.x.idDevoir);
+  }
+
+  function edRecuperer() {
+    return edAppel('/v3/Eleves/' + ed.eleveId + '/cahierdetexte.awp', {}, 'get').then(function (rep) {
+      if (rep.code === 520 || rep.code === 525) throw edExpire();
+      if (rep.code !== 200) throw new Error(rep.message || ('Erreur École Directe ' + rep.code));
+      var aFaire = [], dates = [];
+      Object.keys(rep.data || {}).sort().forEach(function (date) {
+        if (date <= today()) return;
+        rep.data[date].forEach(function (x) {
+          if (!x.effectue && etat.edImportes.indexOf(x.idDevoir) === -1) {
+            aFaire.push({ date: date, x: x });
+            if (dates.indexOf(date) === -1) dates.push(date);
+          }
+        });
+      });
+      var details = {};
+      return dates.reduce(function (chaine, date) {
+        return chaine.then(function () {
+          return edAppel('/v3/Eleves/' + ed.eleveId + '/cahierdetexte/' + date + '.awp', {}, 'get')
+            .then(function (r) { if (r.code === 200) details[date] = r.data; });
+        });
+      }, Promise.resolve()).then(function () {
+        aFaire.forEach(function (a) { edCreer(a, details[a.date]); });
+        return aFaire.length;
+      });
+    });
+  }
+
+  function edSynchroniser(silencieux) {
+    if (edEnCours || !ed.eleveId) return Promise.resolve();
+    edEnCours = true;
+    var debut = ed.token ? Promise.resolve() : (ed.mdp ? edLogin(ed.identifiant, ed.mdp) : Promise.reject(edExpire()));
+    return debut.then(edRecuperer).catch(function (err) {
+      if (err.expire && ed.mdp) return edLogin(ed.identifiant, ed.mdp).then(edRecuperer);
+      throw err;
+    }).then(function (n) {
+      ed.derniereSync = new Date().toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+      edSauver(); sauvegarder(); rendre();
+      if (!silencieux || n) message('ed-message', n ? n + ' tâche(s) importée(s).' : 'Rien de nouveau.', 'succes');
+    }).catch(function (err) {
+      if (err.expire) { ed.token = ''; edSauver(); }
+      if (!silencieux) message('ed-message', err.message || 'Synchronisation impossible.', 'erreur');
+    }).then(function () { edEnCours = false; rendreEd(); });
+  }
+
+  function rendreEd() {
+    $('ed-config-manquante').classList.toggle('cache', edConfigOK);
+    var co = !!(ed.eleveId && (ed.token || ed.mdp));
+    $('ed-deconnecte').classList.toggle('cache', co);
+    $('ed-connecte').classList.toggle('cache', !co);
+    if (!co && ed.identifiant && !$('ed-id').value) $('ed-id').value = ed.identifiant;
+    if (co) $('ed-statut').textContent = 'Connecté' + (ed.prenom ? ' : ' + ed.prenom : '') + (ed.derniereSync ? ' · dernière synchro ' + ed.derniereSync : '') + '.';
+  }
+
+  function edBoutonConnexion() {
+    var id = $('ed-id').value.trim(), mdp = $('ed-mdp').value;
+    if (!id || !mdp) { message('ed-message', 'Remplis l’identifiant et le mot de passe.', 'erreur'); return; }
+    message('ed-message', 'Connexion…', 'succes');
+    edLogin(id, mdp, false).then(function () {
+      ed.mdp = $('ed-memo').checked ? mdp : '';
+      $('ed-mdp').value = '';
+      edSauver(); rendreEd();
+      return edSynchroniser(false);
+    }).catch(function (err) { message('ed-message', err.message || 'Connexion impossible.', 'erreur'); });
+  }
+
+  function edDeconnexion() {
+    ed = { identifiant: '', cn: '', cv: '', token: '', eleveId: '', prenom: '', mdp: '', derniereSync: '' };
+    try { localStorage.removeItem(CLE_ED); } catch (e) {}
+    rendreEd();
   }
 
   /* ---------- Navigation ---------- */
@@ -991,6 +1176,7 @@
     $('fenetre-contenu').querySelector('[data-action="annuler"]').addEventListener('click', fermerFenetre);
     $('fenetre-contenu').querySelector('[data-action="confirmer"]').addEventListener('click', function () {
       etat.jours = [];
+      etat.edImportes = [];
       etat.limite = 120;
       etat.debutTravail = '18:00';
       try { localStorage.removeItem(CLE); } catch (e) {}
@@ -1052,6 +1238,13 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fermerFenetre(); });
 
     $('champ-date').min = addDays(today(), 1);
+    edCharger();
+    $('ed-btn-connexion').addEventListener('click', edBoutonConnexion);
+    $('ed-btn-sync').addEventListener('click', function () { edSynchroniser(false); });
+    $('ed-btn-deco').addEventListener('click', edDeconnexion);
+    setTimeout(function () { edSynchroniser(true); }, 1500);
+    setInterval(function () { edSynchroniser(true); }, 30 * 60 * 1000);
+
     rendreCompte();
     initFirebase();
     afficherEcran('accueil');
