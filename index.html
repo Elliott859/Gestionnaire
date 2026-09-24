@@ -38,7 +38,7 @@
   button{cursor:pointer;}
   :focus-visible{outline:3px solid var(--nuit);outline-offset:2px;}
   .cache{display:none !important;}
-
+ 
   header{text-align:center;padding:34px 18px 14px;}
   .marque{
     margin:0;font-size:clamp(2.1rem,7vw,3.4rem);font-weight:800;letter-spacing:.06em;
@@ -46,7 +46,7 @@
     -webkit-background-clip:text;background-clip:text;color:transparent;
   }
   .accroche{margin:6px 0 0;color:rgba(255,255,255,.9);font-weight:600;}
-
+ 
   nav{
     position:sticky;top:10px;z-index:30;width:fit-content;max-width:calc(100% - 24px);
     margin:0 auto 22px;display:flex;flex-wrap:wrap;justify-content:center;gap:2px;
@@ -58,24 +58,24 @@
   }
   .onglet:hover{background:rgba(240,102,44,.12);color:var(--encre);}
   .onglet.actif{background:var(--orange);color:#fff;}
-
+ 
   main{max-width:780px;margin:0 auto;padding:0 18px 70px;}
   .ecran{display:none;}
   .ecran.actif{display:block;}
   h2{margin:0 0 14px;font-size:1.25rem;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.2);}
-
+ 
   .panneau{background:rgba(255,250,245,.93);border-radius:var(--r-l);padding:22px;box-shadow:var(--ombre);}
   .panneau + h2{margin-top:28px;}
-
+ 
   .jour-titre{margin:0 0 12px;font-size:1.05rem;font-weight:700;text-transform:capitalize;color:var(--encre-douce);}
   .resume{border-radius:var(--r-m);padding:14px 16px;font-weight:700;font-size:1.05rem;}
   .resume.charge{background:linear-gradient(110deg,#ffe4c6,#ffd0a5);color:var(--orange-fonce);}
   .resume.libre{background:var(--vert-clair);color:var(--vert);}
   .resume strong{font-size:1.25rem;}
-
+ 
   .stats{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;padding-top:14px;
     border-top:1px dashed rgba(90,75,120,.3);font-size:.86rem;color:var(--encre-douce);}
-
+ 
   .grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
   .carte{
     display:flex;flex-direction:column;gap:5px;text-align:left;
@@ -93,7 +93,7 @@
   .carte-duree{font-size:.8rem;color:var(--encre-douce);font-weight:700;margin-top:2px;}
   .vide{grid-column:1/-1;margin:0;padding:26px 10px;text-align:center;color:rgba(255,255,255,.92);font-weight:600;}
   .panneau .vide{color:var(--encre-douce);}
-
+ 
   .barre-jour{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
   .fleche{width:44px;height:44px;flex:none;border:0;border-radius:50%;background:var(--papier);
     font-size:1.4rem;font-weight:700;color:var(--orange-fonce);box-shadow:var(--ombre);}
@@ -102,7 +102,7 @@
   .jour-courant b{display:block;font-size:1.05rem;text-transform:capitalize;}
   .jour-courant small{opacity:.8;}
   .centre{text-align:center;margin:0 0 18px;}
-
+ 
   label{display:block;font-weight:700;font-size:.88rem;color:var(--encre-douce);margin-bottom:6px;}
   .champ{margin-bottom:18px;}
   input[type=text],input[type=number],input[type=date],input[type=time],input[type=password]{
@@ -110,12 +110,12 @@
   }
   input:focus{outline:0;border-color:var(--orange);}
   input[type=range]{width:100%;accent-color:var(--orange);}
-
+ 
   .type-choix{display:flex;gap:10px;margin-bottom:20px;}
   .type-btn{flex:1;padding:13px;border-radius:var(--r-m);border:2px solid rgba(90,75,120,.2);
     background:#fff;font-weight:700;transition:border-color .15s,background .15s;}
   .type-btn.actif{border-color:var(--orange);background:#fff1e4;}
-
+ 
   .btn{border:0;border-radius:999px;padding:12px 22px;font-weight:700;transition:filter .15s,background .15s;}
   .btn:hover{filter:brightness(1.05);}
   .pleine{width:100%;}
@@ -123,17 +123,17 @@
   .btn-clair{background:rgba(90,75,120,.12);color:var(--encre);}
   .btn-rouge{background:#ffe9e7;color:var(--rouge);}
   .btn-blanc{background:var(--papier);color:var(--encre);box-shadow:var(--ombre);}
-
+ 
   .message{margin:0 0 16px;padding:11px 14px;border-radius:10px;font-weight:700;font-size:.9rem;}
   .message.cache{display:none;}
   .message.erreur{background:#fdecea;color:var(--rouge);}
   .message.succes{background:var(--vert-clair);color:var(--vert);}
-
+ 
   .ligne{display:flex;align-items:center;justify-content:space-between;gap:12px;
     background:var(--papier);border-radius:var(--r-m);padding:14px 16px;box-shadow:var(--ombre);margin-bottom:10px;}
   .ligne strong{display:block;}
   .ligne span{font-size:.82rem;color:var(--encre-douce);}
-
+ 
   .fenetre{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
     padding:18px;background:rgba(30,20,50,.6);}
   .fenetre.cache{display:none;}
@@ -150,7 +150,7 @@
     padding:10px;border-radius:10px;margin:0 0 10px;}
   .avert{color:var(--rouge);font-weight:600;font-size:.9rem;}
   .fenetre-actions{display:flex;gap:10px;justify-content:flex-end;}
-
+ 
   .lien-effacer{margin-top:24px;text-align:center;}
   .notif-statut{margin:0 0 14px;font-size:.9rem;color:var(--encre-douce);}
   .notif-limite{margin:14px 0 0;font-size:.8rem;color:var(--encre-douce);line-height:1.5;}
@@ -159,7 +159,7 @@
   .mode-travail:empty{display:none;}
   .btn:disabled{opacity:.55;cursor:default;filter:none;}
   .btn:disabled:hover{filter:none;}
-
+ 
   @media (max-width:640px){
     nav{position:fixed;top:auto;bottom:0;left:0;right:0;width:auto;max-width:none;
       justify-content:space-around;border-radius:18px 18px 0 0;
@@ -172,12 +172,12 @@
 </style>
 </head>
 <body>
-
+ 
 <header>
   <h1 class="marque">GESTIONNAIRE</h1>
   <p class="accroche">Tes devoirs et tes contrôles, répartis tout seuls.</p>
 </header>
-
+ 
 <nav>
   <button type="button" class="onglet actif" data-ecran="accueil">Accueil</button>
   <button type="button" class="onglet" data-ecran="planning">Planning</button>
@@ -186,9 +186,9 @@
   <button type="button" class="onglet" data-ecran="prefs">Préférences</button>
   <button type="button" class="onglet" data-ecran="compte">Compte</button>
 </nav>
-
+ 
 <main>
-
+ 
   <section id="ecran-accueil" class="ecran actif">
     <div class="panneau">
       <p class="jour-titre" id="accueil-date"></p>
@@ -202,7 +202,7 @@
       <button type="button" class="btn btn-blanc" data-aller="ajouter">Ajouter une tâche</button>
     </p>
   </section>
-
+ 
   <section id="ecran-planning" class="ecran">
     <h2>Planning</h2>
     <div class="barre-jour">
@@ -216,7 +216,7 @@
     </div>
     <div class="grille" id="planning-taches"></div>
   </section>
-
+ 
   <section id="ecran-ajouter" class="ecran">
     <h2>Ajouter une tâche</h2>
     <div class="panneau">
@@ -248,12 +248,12 @@
       <button type="button" class="btn btn-plein pleine" id="btn-ajouter">Ajouter la tâche</button>
     </div>
   </section>
-
+ 
   <section id="ecran-retirer" class="ecran">
     <h2>Retirer une tâche</h2>
     <div id="retirer-liste"></div>
   </section>
-
+ 
   <section id="ecran-prefs" class="ecran">
     <h2>Préférences</h2>
     <div class="panneau">
@@ -268,14 +268,14 @@
       <p id="prefs-message" class="message cache"></p>
       <button type="button" class="btn btn-plein pleine" id="btn-prefs">Enregistrer</button>
     </div>
-
+ 
     <h2 style="margin-top:28px;">Notifications</h2>
     <div class="panneau">
       <p id="notif-statut" class="notif-statut"></p>
       <button type="button" class="btn btn-blanc pleine" id="btn-notifs">Activer les notifications</button>
       <p class="notif-limite">⚠️ Marche tant que ce site reste ouvert quelque part dans ton navigateur (l’onglet peut être en arrière-plan). Si tu fermes complètement le navigateur, rien ne peut se déclencher — ça demanderait un vrai serveur derrière. Demande-moi si tu veux qu’on aille jusque-là.</p>
     </div>
-
+ 
     <p class="lien-effacer"><button type="button" class="btn btn-rouge" id="btn-effacer">Tout effacer</button></p>
   </section>
   <section id="ecran-compte" class="ecran">
@@ -301,7 +301,7 @@
       <button type="button" class="btn btn-rouge pleine" id="btn-deconnexion">Se déconnecter</button>
     </div>
     <p class="notif-limite cache" id="compte-config-manquante">⚠️ Ce fichier n’a pas encore d’identifiants Firebase — les comptes ne fonctionneront pas tant que tu n’as pas créé ton projet et collé sa configuration en haut du script (voir les instructions fournies avec ce fichier).</p>
-
+ 
     <h2 style="margin-top:28px;">École Directe</h2>
     <p id="ed-message" class="message cache"></p>
     <div class="panneau" id="ed-deconnecte">
@@ -329,16 +329,16 @@
     </div>
     <p class="notif-limite cache" id="ed-config-manquante">⚠️ Colle l’URL de ton Worker Cloudflare dans <code>ED_PROXY</code> dans le script pour activer l’import École Directe.</p>
   </section>
-
+ 
 </main>
-
+ 
 <div class="fenetre cache" id="fenetre">
   <div class="boite">
     <button type="button" class="fermer" id="fenetre-fermer" aria-label="Fermer">✕</button>
     <div id="fenetre-contenu"></div>
   </div>
 </div>
-
+ 
 <!-- Comptes : Firebase Auth + Firestore. Fonctionne seulement une fois firebaseConfig rempli (voir instructions). -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -346,7 +346,7 @@
 <script>
 (function () {
   'use strict';
-
+ 
   /* ---------- Dates : chaînes "AAAA-MM-JJ", comparables directement ---------- */
   function pad2(n) { return String(n).padStart(2, '0'); }
   function toISO(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
@@ -362,11 +362,11 @@
   }
   function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
   function $(id) { return document.getElementById(id); }
-
+ 
   /* ---------- Modèle : Tache / Devoir / Controle / JourPlanning ---------- */
   var compteurId = 0;
   function nouvelId() { compteurId++; return 'i' + Date.now().toString(36) + compteurId; }
-
+ 
   function Tache(nom, matiere, dateLimite, tempsEstime, importance, type) {
     this.id = nouvelId();
     this.nom = nom;
@@ -384,14 +384,14 @@
     return d < t ? t : d;
   };
   Tache.prototype.getJoursRestants = function () { return joursEntre(today(), this.jourExecution); };
-
+ 
   function Devoir(nom, matiere, dateLimite, tempsEstime, importance) {
     Tache.call(this, nom, matiere, dateLimite, tempsEstime, importance, 'Devoir');
     this.jourExecution = this.calculerJourExecution();
   }
   Devoir.prototype = Object.create(Tache.prototype);
   Devoir.prototype.constructor = Devoir;
-
+ 
   function Controle(nom, matiere, dateLimite, tempsEstime, importance) {
     Tache.call(this, nom, matiere, dateLimite, tempsEstime, importance, 'Controle');
     this.dureeMax = this.tempsEstime;
@@ -403,7 +403,7 @@
     if (this.joursRevisions <= 0) return this.dureeMax;
     return this.tempsEstime / this.joursRevisions;
   };
-
+ 
   function JourPlanning(date) {
     this.date = date;
     this.taches = [];
@@ -424,13 +424,13 @@
   JourPlanning.prototype.retirerTache = function (t) { var i = this.taches.indexOf(t); if (i !== -1) this.taches.splice(i, 1); };
   JourPlanning.prototype.ajouterTempsRevisions = function (c) { this.tempsRevisions.push(c); };
   JourPlanning.prototype.depasserLimite = function () { return this.getDureeDeTravail() > etat.limite; };
-
+ 
   /* ---------- État ---------- */
   var etat = { jours: [], limite: 120, debutTravail: '18:00', derniereNotif: null, edImportes: [] };
   var ecran = 'accueil';
   var dateVue = today();
   var typeChoisi = 'Devoir';
-
+ 
   function trouverJour(date) {
     for (var i = 0; i < etat.jours.length; i++) if (etat.jours[i].date === date) return etat.jours[i];
     return null;
@@ -440,13 +440,13 @@
     if (!j) { j = new JourPlanning(date); etat.jours.push(j); }
     return j;
   }
-
+ 
   /* ---------- Service de planification ---------- */
   function getTempsTravail(date) {
     var j = trouverJour(date);
     return j ? j.getDureeDeTravail() : 0;
   }
-
+ 
   function tacheLaMoinsImportante(jour, veille) {
     var choisie = null;
     for (var i = 0; i < jour.taches.length; i++) {
@@ -458,7 +458,7 @@
     }
     return choisie;
   }
-
+ 
   function lisserPlanning() {
     for (var i = 0; i < etat.jours.length; i++) {
       var jour = etat.jours[i];
@@ -473,12 +473,12 @@
       }
     }
   }
-
+ 
   function creerUnDevoir(devoir) {
     jourOuCreer(devoir.jourExecution).ajouterTache(devoir);
     lisserPlanning();
   }
-
+ 
   function creerUnControle(controle) {
     jourOuCreer(controle.dateLimite).ajouterTache(controle);
     var dateRevision = addDays(controle.jourExecution, -1);
@@ -487,7 +487,7 @@
       dateRevision = addDays(dateRevision, -1);
     }
   }
-
+ 
   function nettoyerLePasse() {
     var t = today();
     for (var i = 0; i < etat.jours.length; i++) {
@@ -499,10 +499,10 @@
       return j.date >= t || j.taches.length > 0 || j.tempsRevisions.length > 0;
     });
   }
-
+ 
   /* ---------- Sauvegarde locale (remplace la classe Memoire) ---------- */
   var CLE = 'gestionnaire-v1';
-
+ 
   function etatVersJSON() {
     return {
       limite: etat.limite,
@@ -522,7 +522,7 @@
       })
     };
   }
-
+ 
   function appliquerEtatJSON(d) {
     etat.limite = d.limite || 120;
     etat.debutTravail = d.debutTravail || '18:00';
@@ -550,25 +550,25 @@
       delete j.idsRevisions;
     });
   }
-
+ 
   function sauvegarder() {
     try { localStorage.setItem(CLE, JSON.stringify(etatVersJSON())); } catch (e) { /* navigation privée ou stockage plein : l'appli continue de fonctionner */ }
     if (firebasePret && utilisateurActuel && db) {
       try { db.collection('utilisateurs').doc(utilisateurActuel.uid).set(etatVersJSON()); } catch (e) {}
     }
   }
-
+ 
   function charger() {
     var brut = null;
     try { brut = localStorage.getItem(CLE); } catch (e) { return; }
     if (!brut) return;
     try { appliquerEtatJSON(JSON.parse(brut)); } catch (e) { etat.jours = []; }
   }
-
+ 
   /* ---------- Notifications (tant que ce site est ouvert dans un onglet) ---------- */
   function notifsDisponibles() { return typeof Notification !== 'undefined'; }
   function permissionNotifs() { return notifsDisponibles() ? Notification.permission : 'indisponible'; }
-
+ 
   function demanderPermissionNotifs() {
     if (!notifsDisponibles()) return;
     Notification.requestPermission().then(function (p) {
@@ -578,7 +578,7 @@
       }
     });
   }
-
+ 
   function construireContenuNotif() {
     var jour = trouverJour(today());
     var duree = getTempsTravail(today());
@@ -597,7 +597,7 @@
     var corps = lignes.slice(0, 4).join('\n') + (lignes.length > 4 ? '\n…' : '') + '\n\nTotal : ' + Math.round(duree) + ' min';
     return { titre: '⏰ C’est l’heure de travailler !', corps: corps };
   }
-
+ 
   function verifierNotifTravail() {
     if (permissionNotifs() !== 'granted') return;
     if (!etat.debutTravail) return;
@@ -613,17 +613,17 @@
       n.onclick = function () { if (typeof window.focus === 'function') window.focus(); n.close(); };
     } catch (e) {}
   }
-
+ 
   /* ---------- Mode travail (bandeau basé sur l'heure de début + la durée du jour) ---------- */
   function heureActuelle() { var m = new Date(); return pad2(m.getHours()) + ':' + pad2(m.getMinutes()); }
-
+ 
   function ajouterMinutesHeure(debut, minutes) {
     var p = debut.split(':').map(Number);
     var total = p[0] * 60 + p[1] + Math.round(minutes);
     total = ((total % 1440) + 1440) % 1440;
     return pad2(Math.floor(total / 60)) + ':' + pad2(total % 60);
   }
-
+ 
   function statutModeTravail() {
     var duree = getTempsTravail(today());
     if (duree <= 0) return { actif: false, texte: 'Pas de mode travail aujourd’hui — rien à faire.' };
@@ -635,7 +635,7 @@
     if (maintenant < debut) return { actif: false, texte: 'Mode travail à partir de ' + debut + ' (' + Math.round(duree) + ' min prévues).' };
     return { actif: false, texte: 'Session de travail terminée pour aujourd’hui.' };
   }
-
+ 
   function rafraichirBandeauModeTravail() {
     var el = $('accueil-mode-travail');
     if (!el) return;
@@ -643,7 +643,7 @@
     el.textContent = m.texte;
     el.className = 'mode-travail' + (m.actif ? ' actif' : '');
   }
-
+ 
   /* ---------- Compte (Firebase Auth + Firestore) ----------
      Remplis firebaseConfig avec les identifiants de TON projet Firebase
      (voir les instructions fournies avec ce fichier). Tant que ce n'est
@@ -659,7 +659,7 @@
   var firebasePret = false;
   var utilisateurActuel = null;
   var db = null;
-
+ 
   function initFirebase() {
     if (!firebaseConfig.apiKey || firebaseConfig.apiKey.indexOf('COLLE_') === 0) return;
     if (typeof firebase === 'undefined') return;
@@ -674,7 +674,7 @@
       });
     } catch (e) { firebasePret = false; }
   }
-
+ 
   function chargerDepuisFirestore(uid) {
     db.collection('utilisateurs').doc(uid).get().then(function (doc) {
       if (doc.exists) {
@@ -686,7 +686,7 @@
       rendre();
     }).catch(function () {});
   }
-
+ 
   function traduireErreurAuth(err) {
     var code = err && err.code;
     if (code === 'auth/email-already-in-use') return 'Ce compte existe déjà — connecte-toi plutôt.';
@@ -695,7 +695,7 @@
     if (code === 'auth/wrong-password' || code === 'auth/user-not-found' || code === 'auth/invalid-credential') return 'Email ou mot de passe incorrect.';
     return 'Erreur : ' + (err && err.message ? err.message : 'inconnue');
   }
-
+ 
   function connexionCompte() {
     if (!firebasePret) { message('compte-message', 'Configuration Firebase manquante.', 'erreur'); return; }
     var email = $('compte-email').value.trim();
@@ -705,7 +705,7 @@
       message('compte-message', traduireErreurAuth(err), 'erreur');
     });
   }
-
+ 
   function inscriptionCompte() {
     if (!firebasePret) { message('compte-message', 'Configuration Firebase manquante.', 'erreur'); return; }
     var email = $('compte-email').value.trim();
@@ -716,12 +716,12 @@
       message('compte-message', traduireErreurAuth(err), 'erreur');
     });
   }
-
+ 
   function deconnexionCompte() {
     if (!firebasePret) return;
     firebase.auth().signOut();
   }
-
+ 
   function rendreCompte() {
     $('compte-config-manquante').classList.toggle('cache', firebasePret);
     var deco = $('compte-deconnecte');
@@ -736,7 +736,7 @@
     }
     rendreEd();
   }
-
+ 
   /* ---------- École Directe (via un proxy Cloudflare Worker) ---------- */
   var ED_PROXY = 'https://hidden-sun-06f5.elliott-pontabry.workers.dev'; // ex. https://ed-proxy.toncompte.workers.dev
   var ED_VERSION = '4.75.0';
@@ -745,7 +745,7 @@
   var edConfigOK = ED_PROXY.indexOf('COLLE_') !== 0;
   var ed = { identifiant: '', cn: '', cv: '', token: '', eleveId: '', prenom: '', mdp: '', derniereSync: '' };
   var edEnCours = false;
-
+ 
   function edCharger() { try { var b = localStorage.getItem(CLE_ED); if (b) Object.assign(ed, JSON.parse(b)); } catch (e) {} }
   function edSauver() { try { localStorage.setItem(CLE_ED, JSON.stringify(ed)); } catch (e) {} }
   function b64(s) {
@@ -756,7 +756,7 @@
     } catch (e) { return ''; }
   }
   function edExpire() { var e = new Error('Session École Directe expirée : reconnecte-toi.'); e.expire = true; return e; }
-
+ 
   function edAppel(chemin, donnees, verbe) {
     if (!edConfigOK) return Promise.reject(new Error('Proxy École Directe non configuré.'));
     var headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
@@ -770,10 +770,10 @@
       });
     }).then(function (rep) { if (rep.token) ed.token = rep.token; return rep; });
   }
-
+ 
   function edLogin(identifiant, mdp, apresQCM) {
     ed.token = '';
-    var corps = { identifiant: identifiant, motdepasse: encodeURIComponent(mdp), isReLogin: false, uuid: '' };
+    var corps = { identifiant: identifiant, motdepasse: encodeURIComponent(mdp), isReLogin: false, isRelogin: false, uuid: '' };
     if (ed.cn && ed.cv) corps.fa = [{ cn: ed.cn, cv: ed.cv }];
     return edAppel('/v3/login.awp', corps).then(function (rep) {
       if (rep.code === 250 && !apresQCM) return edQCM(identifiant, mdp);
@@ -784,7 +784,7 @@
       edSauver();
     });
   }
-
+ 
   function edQCM(identifiant, mdp) {
     return edAppel('/v3/connexion/doubleauth.awp', {}, 'get').then(function (rep) {
       if (rep.code !== 200) throw new Error(rep.message || 'Double authentification impossible.');
@@ -808,7 +808,7 @@
       });
     });
   }
-
+ 
   function edCreer(a, detail) {
     var m = null;
     if (detail && detail.matieres) detail.matieres.forEach(function (mm) {
@@ -825,7 +825,7 @@
     else creerUnDevoir(new Devoir(nom, mat, a.date, 10, 3));
     etat.edImportes.push(a.x.idDevoir);
   }
-
+ 
   function edRecuperer() {
     return edAppel('/v3/Eleves/' + ed.eleveId + '/cahierdetexte.awp', {}, 'get').then(function (rep) {
       if (rep.code === 520 || rep.code === 525) throw edExpire();
@@ -852,7 +852,7 @@
       });
     });
   }
-
+ 
   function edSynchroniser(silencieux) {
     if (edEnCours || !ed.eleveId) return Promise.resolve();
     edEnCours = true;
@@ -869,7 +869,7 @@
       if (!silencieux) message('ed-message', err.message || 'Synchronisation impossible.', 'erreur');
     }).then(function () { edEnCours = false; rendreEd(); });
   }
-
+ 
   function rendreEd() {
     $('ed-config-manquante').classList.toggle('cache', edConfigOK);
     var co = !!(ed.eleveId && (ed.token || ed.mdp));
@@ -878,7 +878,7 @@
     if (!co && ed.identifiant && !$('ed-id').value) $('ed-id').value = ed.identifiant;
     if (co) $('ed-statut').textContent = 'Connecté' + (ed.prenom ? ' : ' + ed.prenom : '') + (ed.derniereSync ? ' · dernière synchro ' + ed.derniereSync : '') + '.';
   }
-
+ 
   function edBoutonConnexion() {
     var id = $('ed-id').value.trim(), mdp = $('ed-mdp').value;
     if (!id || !mdp) { message('ed-message', 'Remplis l’identifiant et le mot de passe.', 'erreur'); return; }
@@ -890,13 +890,13 @@
       return edSynchroniser(false);
     }).catch(function (err) { message('ed-message', err.message || 'Connexion impossible.', 'erreur'); });
   }
-
+ 
   function edDeconnexion() {
     ed = { identifiant: '', cn: '', cv: '', token: '', eleveId: '', prenom: '', mdp: '', derniereSync: '' };
     try { localStorage.removeItem(CLE_ED); } catch (e) {}
     rendreEd();
   }
-
+ 
   /* ---------- Navigation ---------- */
   function afficherEcran(nom) {
     ecran = nom;
@@ -911,7 +911,7 @@
     rendre();
     window.scrollTo(0, 0);
   }
-
+ 
   function rendre() {
     if (ecran === 'accueil') rendreAccueil();
     else if (ecran === 'planning') rendrePlanning();
@@ -919,7 +919,7 @@
     else if (ecran === 'prefs') rendrePrefs();
     else if (ecran === 'compte') rendreCompte();
   }
-
+ 
   /* ---------- Cartes ---------- */
   function resumeTravail(el, duree, phrase, phraseVide) {
     if (duree > 0) {
@@ -930,7 +930,7 @@
       el.textContent = phraseVide;
     }
   }
-
+ 
   function grilleDuJour(conteneur, date) {
     conteneur.innerHTML = '';
     var jour = trouverJour(date);
@@ -941,7 +941,7 @@
     jour.taches.forEach(function (t) { conteneur.appendChild(carteTache(t)); });
     jour.tempsRevisions.forEach(function (c) { conteneur.appendChild(carteRevision(c, jour)); });
   }
-
+ 
   function carteTache(tache) {
     var b = document.createElement('button');
     b.type = 'button';
@@ -954,7 +954,7 @@
     b.addEventListener('click', function () { ouvrirTache(tache); });
     return b;
   }
-
+ 
   function carteRevision(controle, jour) {
     var b = document.createElement('button');
     b.type = 'button';
@@ -967,14 +967,14 @@
     b.addEventListener('click', function () { ouvrirRevision(controle, jour); });
     return b;
   }
-
+ 
   /* ---------- Fenêtre de détail ---------- */
   function ouvrirFenetre(html) {
     $('fenetre-contenu').innerHTML = html;
     $('fenetre').classList.remove('cache');
   }
   function fermerFenetre() { $('fenetre').classList.add('cache'); }
-
+ 
   function ouvrirTache(tache) {
     ouvrirFenetre(
       '<h3>' + esc(tache.nom) + '</h3>' +
@@ -995,7 +995,7 @@
     var a = $('fenetre-contenu').querySelector('[data-action="annuler-fait"]');
     if (a) a.addEventListener('click', function () { tache.fait = false; sauvegarder(); ouvrirTache(tache); rendre(); });
   }
-
+ 
   function ouvrirRevision(controle, jour) {
     ouvrirFenetre(
       '<h3>Révision : ' + esc(controle.nom) + '</h3>' +
@@ -1013,7 +1013,7 @@
     var a = $('fenetre-contenu').querySelector('[data-action="annuler-fait"]');
     if (a) a.addEventListener('click', function () { jour.revisionFait = false; sauvegarder(); ouvrirRevision(controle, jour); rendre(); });
   }
-
+ 
   /* ---------- Message temporaire ---------- */
   function message(id, texte, type) {
     var el = $(id);
@@ -1022,7 +1022,7 @@
     clearTimeout(el.minuteur);
     el.minuteur = setTimeout(function () { el.className = 'message cache'; }, 5000);
   }
-
+ 
   /* ---------- Écran Accueil ---------- */
   function rendreAccueil() {
     lisserPlanning();
@@ -1030,7 +1030,7 @@
     $('accueil-date').textContent = dateFRLongue(today());
     resumeTravail($('accueil-resume'), getTempsTravail(today()), 'de travail aujourd’hui', 'Rien à faire aujourd’hui. Profites-en.');
     grilleDuJour($('accueil-taches'), today());
-
+ 
     var total = 0, sept = 0;
     for (var i = 0; i < 7; i++) {
       var d = addDays(today(), i);
@@ -1043,7 +1043,7 @@
       '<span>limite : <strong>' + etat.limite + ' min/jour</strong></span>';
     rafraichirBandeauModeTravail();
   }
-
+ 
   /* ---------- Écran Planning ---------- */
   function rendrePlanning() {
     $('planning-date').textContent = dateVue === today() ? 'Aujourd’hui · ' + dateFR(dateVue) : dateFR(dateVue);
@@ -1051,7 +1051,7 @@
     resumeTravail($('planning-resume'), getTempsTravail(dateVue), 'de travail ce jour-là', 'Journée libre.');
     grilleDuJour($('planning-taches'), dateVue);
   }
-
+ 
   /* ---------- Écran Ajouter ---------- */
   function ajouterTache() {
     var matiere = $('champ-matiere').value.trim();
@@ -1059,22 +1059,22 @@
     var date = $('champ-date').value;
     var importance = parseInt($('champ-importance').value, 10);
     var duree = parseInt($('champ-duree').value, 10);
-
+ 
     if (!date) { message('ajout-message', 'Il faut remplir toutes les cases.', 'erreur'); return; }
     if (date <= today()) { message('ajout-message', 'La date doit être après aujourd’hui.', 'erreur'); return; }
     if (!duree || duree <= 0) { message('ajout-message', 'Indique une durée en minutes.', 'erreur'); return; }
     if (!importance || importance < 1 || importance > 10) { message('ajout-message', 'L’importance va de 1 à 10.', 'erreur'); return; }
     if (nom.length < 3) { message('ajout-message', 'Le nom doit contenir au moins 3 caractères.', 'erreur'); return; }
     if (matiere.length < 3) { message('ajout-message', 'La matière doit contenir au moins 3 caractères.', 'erreur'); return; }
-
+ 
     var existe = etat.jours.some(function (j) {
       return j.taches.some(function (t) { return t.nom === nom && t.matiere === matiere; });
     });
     if (existe) { message('ajout-message', 'Cette tâche existe déjà.', 'erreur'); return; }
-
+ 
     if (typeChoisi === 'Devoir') creerUnDevoir(new Devoir(nom, matiere, date, duree, importance));
     else creerUnControle(new Controle(nom, matiere, date, duree, importance));
-
+ 
     sauvegarder();
     message('ajout-message', 'Tâche ajoutée. Elle est placée au bon jour dans ton planning.', 'succes');
     $('champ-matiere').value = '';
@@ -1084,7 +1084,7 @@
     $('champ-importance').value = 5;
     $('valeur-importance').textContent = '5';
   }
-
+ 
   /* ---------- Écran Retirer ---------- */
   function rendreRetirer() {
     var liste = $('retirer-liste');
@@ -1094,7 +1094,7 @@
       j.taches.forEach(function (t) { toutes.push({ t: t, j: j }); });
     });
     toutes.sort(function (a, b) { return a.t.dateLimite < b.t.dateLimite ? -1 : 1; });
-
+ 
     if (toutes.length === 0) {
       liste.innerHTML = '<p class="vide">Aucune tâche enregistrée.</p>';
       return;
@@ -1111,7 +1111,7 @@
       liste.appendChild(ligne);
     });
   }
-
+ 
   function confirmerRetrait(tache, jour) {
     ouvrirFenetre(
       '<h3>Retirer cette tâche ?</h3>' +
@@ -1132,12 +1132,12 @@
       rendreRetirer();
     });
   }
-
+ 
   /* ---------- Écran Préférences ---------- */
   function rendrePrefs() {
     $('champ-limite').value = etat.limite;
     $('champ-debut').value = etat.debutTravail;
-
+ 
     var statut = $('notif-statut');
     var btn = $('btn-notifs');
     var p = permissionNotifs();
@@ -1155,7 +1155,7 @@
       btn.disabled = false; btn.textContent = 'Activer les notifications';
     }
   }
-
+ 
   function enregistrerPrefs() {
     var limite = parseInt($('champ-limite').value, 10);
     var debut = $('champ-debut').value;
@@ -1170,7 +1170,7 @@
     message('prefs-message', 'Préférences enregistrées.', 'succes');
     verifierNotifTravail();
   }
-
+ 
   function toutEffacer() {
     ouvrirFenetre(
       '<h3>Tout effacer ?</h3>' +
@@ -1191,32 +1191,32 @@
       afficherEcran('accueil');
     });
   }
-
+ 
   /* ---------- Démarrage ---------- */
   function init() {
     charger();
     nettoyerLePasse();
     lisserPlanning();
     sauvegarder();
-
+ 
     var onglets = document.querySelectorAll('.onglet');
     for (var i = 0; i < onglets.length; i++) {
       (function (bouton) {
         bouton.addEventListener('click', function () { afficherEcran(bouton.getAttribute('data-ecran')); });
       })(onglets[i]);
     }
-
+ 
     var raccourcis = document.querySelectorAll('[data-aller]');
     for (var k = 0; k < raccourcis.length; k++) {
       (function (bouton) {
         bouton.addEventListener('click', function () { afficherEcran(bouton.getAttribute('data-aller')); });
       })(raccourcis[k]);
     }
-
+ 
     $('jour-precedent').addEventListener('click', function () { dateVue = addDays(dateVue, -1); rendrePlanning(); });
     $('jour-suivant').addEventListener('click', function () { dateVue = addDays(dateVue, 1); rendrePlanning(); });
     $('jour-aujourdhui').addEventListener('click', function () { dateVue = today(); rendrePlanning(); });
-
+ 
     var types = document.querySelectorAll('.type-btn');
     for (var m = 0; m < types.length; m++) {
       (function (bouton) {
@@ -1227,7 +1227,7 @@
         });
       })(types[m]);
     }
-
+ 
     $('champ-importance').addEventListener('input', function () {
       $('valeur-importance').textContent = $('champ-importance').value;
     });
@@ -1238,11 +1238,11 @@
     $('btn-connexion').addEventListener('click', connexionCompte);
     $('btn-inscription').addEventListener('click', inscriptionCompte);
     $('btn-deconnexion').addEventListener('click', deconnexionCompte);
-
+ 
     $('fenetre-fermer').addEventListener('click', fermerFenetre);
     $('fenetre').addEventListener('click', function (e) { if (e.target === $('fenetre')) fermerFenetre(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fermerFenetre(); });
-
+ 
     $('champ-date').min = addDays(today(), 1);
     edCharger();
     $('ed-btn-connexion').addEventListener('click', edBoutonConnexion);
@@ -1250,22 +1250,21 @@
     $('ed-btn-deco').addEventListener('click', edDeconnexion);
     setTimeout(function () { edSynchroniser(true); }, 1500);
     setInterval(function () { edSynchroniser(true); }, 30 * 60 * 1000);
-
+ 
     rendreCompte();
     initFirebase();
     afficherEcran('accueil');
-
+ 
     verifierNotifTravail();
     setInterval(function () {
       verifierNotifTravail();
       rafraichirBandeauModeTravail();
     }, 30000);
   }
-
+ 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
 </script>
 </body>
 </html>
-
